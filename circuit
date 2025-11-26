@@ -1,43 +1,36 @@
 #include <stdio.h>
 
-int main() {
-    // Given resistor and voltage values (you can later replace with user input)
-    float R1 = 3.0, R2 = 6.0, R3 = 2.0, RF = 4.0; 
-    float V = 12.0; // Supply voltage
+int main(void) {
+    double R2 = 4.0;   // example: ohms
+    double R3 = 6.0;   // example: ohms
+    double RF = 8.0;   // example: ohms
+    double V  = 12.0;  // example: volts
 
-    // Declare variables
-    float R23, R_eq_parallel, R_total, I_total, V_R1, V_parallel;
+    double R23 = R2 + R3;                       // series
+    double Req;
 
-    // Calculate R23 (R2 and R3 in parallel)
-    R23 = (R2 * R3) / (R2 + R3);
+    if (R23 + RF == 0.0) {
+        printf("Error: division by zero in parallel calculation.\n");
+        return 1;
+    }
+    Req = (R23 * RF) / (R23 + RF);              // parallel
 
-    // Calculate equivalent parallel of R23 with RF
-    R_eq_parallel = (R23 * RF) / (R23 + RF);
+    double I_branch = V / Req;                  // total current through that parallel combination
+    double I_F = V / RF;                        // current through RF
+    double I_23 = V / R23;                      // current through series pair (same through R2 and R3)
+    double V_R2 = I_23 * R2;
+    double V_R3 = I_23 * R3;
 
-    // Total resistance (R1 in series with the parallel network)
-    R_total = R1 + R_eq_parallel;
+    printf("R2 = %.2f ohm, R3 = %.2f ohm, RF = %.2f ohm\n", R2, R3, RF);
+    printf("R23 (series) = %.2f ohm\n", R23);
+    printf("Req (R23 // RF) = %.2f ohm\n\n", Req);
 
-    // Total current from the source (Ohm’s Law)
-    I_total = V / R_total;
-
-    // Voltage drops
-    V_R1 = I_total * R1;
-    V_parallel = V - V_R1; // Remaining voltage across the parallel network
-
-    // Display results (2 decimal places)
-    printf("=== Circuit Calculation Results ===\n");
-    printf("R1 = %.2f ohms\n", R1);
-    printf("R2 = %.2f ohms\n", R2);
-    printf("R3 = %.2f ohms\n", R3);
-    printf("RF = %.2f ohms\n", RF);
-    printf("Supply Voltage (V) = %.2f V\n\n", V);
-
-    printf("R23 (R2 || R3) = %.2f ohms\n", R23);
-    printf("R_eq_parallel (R23 || RF) = %.2f ohms\n", R_eq_parallel);
-    printf("Total Resistance (R_total) = %.2f ohms\n", R_total);
-    printf("Total Current (I_total) = %.2f A\n", I_total);
-    printf("Voltage across R1 = %.2f V\n", V_R1);
-    printf("Voltage across parallel part (R23 || RF) = %.2f V\n", V_parallel);
+    printf("Supply V = %.2f V\n", V);
+    printf("I_branch (through parallel combo) = %.2f A\n", I_branch);
+    printf("I_F = %.2f A\n", I_F);
+    printf("I_23 = %.2f A\n", I_23);
+    printf("Voltage across R2 = %.2f V\n", V_R2);
+    printf("Voltage across R3 = %.2f V\n", V_R3);
 
     return 0;
 }
